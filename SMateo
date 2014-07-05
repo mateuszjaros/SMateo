@@ -1,0 +1,111 @@
+#include <idDHT11.h>
+#include <Wire.h>
+#include <LiquidCrystal.h>
+#include <Adafruit_BMP085.h>
+#include <idDHT11.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 2 //Ds18b20 -> pin 2
+LiquidCrystal lcd(12,11,10,9,8,7); // lcd -> piny 12,11,10,9,8,7
+Adafruit_BMP085 bmp;
+int idDHT11pin = 3; // DHT11 -> pin 3
+int idDHT11intNumber = 0; // odpowiednie przerwania wg Example
+idDHT11 DHT11(idDHT11pin,idDHT11intNumber,dht11_wrapper);
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+byte dom[8] = {
+  B00000,
+  B00000,
+  B00000,
+  B00100,
+  B01110,
+  B11111,
+  B01110,
+  B01110
+};
+byte drzewo[8] = {
+  B00000,
+  B00000,
+  B01110,
+  B01110,
+  B01110,
+  B01110,
+  B00100,
+  B00100
+};
+byte stopnie[8] = {
+  B01000,
+  B10100,
+  B01000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+};
+
+void setup()
+{
+ // Serial.begin(9600);
+  lcd.createChar(0,dom);
+  lcd.createChar(1,drzewo);
+  lcd.createChar(2,stopnie);
+  lcd.begin(16,2);
+  if (!bmp.begin()){
+  // Serial.println("Nie można połączyć się z BMP085 :(");
+   while (1) {}
+   }
+  sensors.begin();
+}
+void dht11_wrapper(){
+  DHT11.isrCallback();
+}
+
+void loop() 
+{
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.write((byte)1);
+  lcd.print(bmp.readTemperature());
+  lcd.write((byte)3);
+  lcd.print("C");
+  lcd.write((byte)0);
+    sensors.requestTemperatures();
+  lcd.print(sensors.getTempCByIndex(0));
+  lcd.write((byte)3);
+  lcd.print("C");
+  lcd.setCursor(0,1);
+  lcd.print(bmp.readPressure()/100);
+  lcd.print("hPa ");
+  DHT11.acquire();
+  while (DHT11.acquiring())
+    ;
+  int result = DHT11.getStatus();
+  switch (result)
+  {
+  case IDDHTLIB_OK: 
+   // Serial.println("OK"); 
+    break;
+  case IDDHTLIB_ERROR_CHECKSUM: 
+    break;
+  case IDDHTLIB_ERROR_ISR_TIMEOUT: 
+    break;
+  case IDDHTLIB_ERROR_RESPONSE_TIMEOUT: 
+    break;
+  case IDDHTLIB_ERROR_DATA_TIMEOUT: 
+    break;
+  case IDDHTLIB_ERROR_ACQUIRING: 
+    break;
+  case IDDHTLIB_ERROR_DELTA: 
+    break;
+  case IDDHTLIB_ERROR_NOTSTARTED: 
+    break;
+  default: 
+    break;
+  }
+  lcd.print(DHT11.getHumidity(),2);
+  lcd.print("%");
+  
+  delay(500);
+}
+
