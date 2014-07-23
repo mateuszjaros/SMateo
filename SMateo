@@ -125,7 +125,7 @@ void loop()
   Serial.println();
   Serial.println(); 
   
-  //lcd.clear();
+  lcd.clear();
   lcd.write((byte)1);
   sensors.requestTemperatures();
   lcd.print(sensors.getTempCByIndex(0));
