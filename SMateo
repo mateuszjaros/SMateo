@@ -29,12 +29,13 @@ byte stopnie[8] ={
 byte dom[8] = {
   B00000,
   B00000,
+  B00000,
   B00100,
   B01110,
   B11111,
   B01110,
-  B01110,
   B01110
+  
 };
 
 byte drzewo[8] = {
@@ -132,12 +133,13 @@ void loop()
   lcd.write((byte)2);
   lcd.print(bmp.readTemperature());
   lcd.write((byte)0);
+  lcd.print("C");
   lcd.setCursor(0,1);
   lcd.write((byte)1);
   sensors.requestTemperatures();
   lcd.print(sensors.getTempCByIndex(0));
   lcd.write((byte)0);
-  lcd.print(" ");
+  lcd.print("C");
   lcd.write((byte)4);
   lcd.print(bmp.readPressure()/100);
   lcd.print("hPa");
