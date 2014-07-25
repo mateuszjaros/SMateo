@@ -4,12 +4,12 @@
 #include <Adafruit_BMP085.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#define ONE_WIRE_BUS 1
+#define ONE_WIRE_BUS 2
 
-char msg[25];
-int ldrPin = A0;
-int rainPin = A1;
-int gndPin = A2;
+char msg[21];
+int ldrPin = A0; // fotorezystor
+int rainPin = A1; // czujnik deszczu
+int gndPin = A2; // czujnik wilgotności gleby
 
 Adafruit_BMP085 bmp;
 
@@ -17,7 +17,7 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 const int transmit_pin = 12;
-const int receive_pin = 2;
+const int receive_pin = 4;
 const int transmit_en_pin = 3;
 
 int idDHT11pin = 0; 
@@ -73,7 +73,7 @@ void loop()
     break;  
   }
   sensors.requestTemperatures();
-  Serial.print("Humidity (%): ");
+  Serial.print("Humidity (%): "); // podgląd odczytów z czujników
   Serial.println(DHT11.getHumidity(), 2);
   Serial.print("Cisnienie BMP085 (hPa):");
   Serial.println(bmp.readPressure()/100);
@@ -88,7 +88,7 @@ void loop()
   Serial.println();
   Serial.println(); 
 
- int t = (sensors.getTempCByIndex(0)*100);
+ int t = (sensors.getTempCByIndex(0)*100); //wartości czujników jako zmienne
  int w = (DHT11.getHumidity());
  int c = (bmp.readPressure()/100);
  int l = (map(analogRead(ldrPin), 0, 1023, 0, 999));
@@ -101,20 +101,20 @@ void loop()
  Serial.println(r);
  Serial.println(g);
  
- char msg[25];
-int n = sprintf(msg, "%d.%d.%d.%d.%d.%d.",t, w, c, l, r, g);
-  msg.toCharArray(Msg,(msg.length()+1));
-    for (int i = 0; i <= msg.length(); i++) {
-    Serial.print(Msg[i]);}
-      vw_send((uint8_t *)Msg, strlen(Msg));
-    vw_wait_tx(); 
- // msg.toCharArray(Msg, (msg.length()+1));
-  //vw_send((uint8_t *)msg, 25);
-  //vw_wait_tx(); // Wait until the whole message is gone
-  //digitalWrite(13, LOW);
-  delay(200);
+ char msg[21];
+
+sprintf(msg, "%d.%d.%d.%d.%d.%d.",t, w, c, l, r, g); 
+
+for (int i = 0; i < strlen(msg); i++) {
+Serial.print(msg[i]);}
+digitalWrite(13,HIGH);
+vw_send((uint8_t *)msg, strlen(msg));
+vw_wait_tx(); 
+digitalWrite(13,LOW);
+
 Serial.println("\n");
-Serial.print(msg);
+Serial.print(msg); // drukowanie na serialu wysłanej wiadomości
 Serial.println("\n");
 
+delay(200);
 }
