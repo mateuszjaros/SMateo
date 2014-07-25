@@ -7,7 +7,7 @@ Do zbudowania SMateo/SMateoRF będą nam potrzebne:
 -fotorezystor
 -Arduino 
 -LCD
--potencjometr
+-potencjometr 10K
 -rezystory: 4K7, 220Ohm
 -kondensatory filtrujące zasialnie 100nF 
 -nadajnik i odbiornik RF*
