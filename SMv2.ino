@@ -19,6 +19,13 @@ void dht11_wrapper();
 idDHT11 DHT11(idDHT11pin,idDHT11intNumber,dht11_wrapper);
 
 int czas = 0;
+int ghumidity = 0;
+int ghumidity1 = 0;
+int lldr = 0;
+int rain1 = 0;
+int ldr = 0;
+int rain =0;
+int hum = 0;
 
 void setup()
 {
@@ -38,22 +45,24 @@ void dht11_wrapper() {
 }
 void loop()
 {
- int ghumidity = analogRead(A1);
- int rain = analogRead(A0);
- int ldr = analogRead(A2);
- int lldr = map(ldr,0,1023,0,100);
- int rain1 = map(rain, 0,1023,100,0);
- 
+
  if (czas <3)
  {
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("Temperatures");
+   lcd.print("Temperatures In");
    lcd.setCursor(0,1);
    lcdtempin();
-   lcdtempout();
  }
  else if (czas >= 3 && czas <6)
+ {
+   lcd.clear();
+   lcd.setCursor(0,0);
+   lcd.print("Temperatures Out");
+   lcd.setCursor(0,1);
+   lcdtempout();
+ }
+ else if (czas >= 6 && czas <9)
  {
    lcd.clear();
    lcd.setCursor(0,0);
@@ -61,7 +70,7 @@ void loop()
    lcd.setCursor(0,1);
    lcdhumidity();
  }
- else if (czas >=6 && czas <9)
+ else if (czas >=9 && czas <12)
  {
    lcd.clear();
    lcd.setCursor(0,0);
@@ -69,7 +78,7 @@ void loop()
    lcd.setCursor(0,1);
    lcdpressure();
  }
- else if (czas >=9 && czas <12)
+ else if (czas >=12 && czas <15)
  {
    lcd.clear();
    lcd.setCursor(0,0);
@@ -77,7 +86,7 @@ void loop()
    lcd.setCursor(0,1);
    lcdrain();
  }
- else if (czas >=12 && czas <15)
+ else if (czas >=15 && czas <18)
  {
    lcd.clear();
    lcd.setCursor(0,0);
@@ -85,13 +94,17 @@ void loop()
    lcd.setCursor(0,1);
    lcdghumidity();
  }
- else
+ else if (czas >=18 && czas <21)
  {
    lcd.clear();
    lcd.setCursor(0,0);
    lcd.print("Light");
    lcd.setCursor(0,1);
    lcdldr();
+ }
+ else
+ {
+   (czas = 0 );
  }
  
  (czas ++);
@@ -103,7 +116,6 @@ void loop()
 void lcdtempin()
 {
   sensors.requestTemperatures();
-  lcd.print("In");
   lcd.print(sensors.getTempCByIndex(0));
   lcd.print("C");
 }
@@ -112,7 +124,6 @@ void lcdtempin()
 void lcdtempout()
 {
   sensors.requestTemperatures();
-  lcd.print("Out");
   lcd.print(sensors.getTempCByIndex(1));
   lcd.print("C");
 }
@@ -128,8 +139,8 @@ void lcdhumidity()
   default: 
     break;  
   }
-  
-  lcd.print(DHT11.getHumidity(), 2);
+  (hum = DHT11.getHumidity(), 2);
+  lcd.print(hum);
   lcd.print("% ");
 }
 
@@ -183,43 +194,52 @@ void spressure()
 
 void lcdrain()
 {
+  (rain = analogRead(A0));
+  rain1 = map(rain, 0,1023,10,0);
   lcd.print(rain1);
 }
 
 void srain()
 {
+  (rain = analogRead(A0));
   Serial.print("Rain: ");
   Serial.println(rain);
 }
 
 void lcdghumidity()
 {
- int ghumidity1 = map(ghumidity, 0,1023,100,0);
+  (ghumidity = analogRead(A1));
+ (ghumidity1 = map(ghumidity, 0,1023,10,0));
   lcd.print(ghumidity1);
 }
 
 
 void sghumidity()
 {
+  (ghumidity = analogRead(A1));
   Serial.print("Ground Humidity: ");
   Serial.println(ghumidity);
 }
 
 void lcdldr()
 {
+  ldr = analogRead(A2);
+  lldr = map(ldr,0,1023,0,100);
   lcd.print(lldr);
 }
 
-
 void sldr()
 {
+  ldr = analogRead(A2);
   Serial.print("LDR");
   Serial.println(ldr);
 }
 
-
+/*
 void lcdlight()
 {
+  ldr = analogRead(A2);
+
   if (ldr =<900)
   {
     analogWrite(3,255);
@@ -233,4 +253,4 @@ void lcdlight()
     map(ldr, 0,500,1,149);
   }
 
-  
+ */ 
