@@ -45,13 +45,13 @@ void dht11_wrapper() {
 }
 void loop()
 {
-
+//lcdlight();
  if (czas <3)
  {
    lcd.clear();
    lcd.setCursor(0,0);
    lcd.print("Temperatures In");
-   lcd.setCursor(0,1);
+   lcd.setCursor(4,1);
    lcdtempin();
  }
  else if (czas >= 3 && czas <6)
@@ -59,31 +59,31 @@ void loop()
    lcd.clear();
    lcd.setCursor(0,0);
    lcd.print("Temperatures Out");
-   lcd.setCursor(0,1);
+   lcd.setCursor(4,1);
    lcdtempout();
  }
  else if (czas >= 6 && czas <9)
  {
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("Humidity");
-   lcd.setCursor(0,1);
+   lcd.print("   Humidity");
+   lcd.setCursor(5,1);
    lcdhumidity();
  }
  else if (czas >=9 && czas <12)
  {
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("Pressure");
-   lcd.setCursor(0,1);
+   lcd.print("   Pressure");
+   lcd.setCursor(5,1);
    lcdpressure();
  }
  else if (czas >=12 && czas <15)
  {
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("Rain");
-   lcd.setCursor(0,1);
+   lcd.print("    Rain");
+   lcd.setCursor(5,1);
    lcdrain();
  }
  else if (czas >=15 && czas <18)
@@ -91,15 +91,15 @@ void loop()
    lcd.clear();
    lcd.setCursor(0,0);
    lcd.print("Ground Humidity");
-   lcd.setCursor(0,1);
+   lcd.setCursor(5,1);
    lcdghumidity();
  }
  else if (czas >=18 && czas <21)
  {
    lcd.clear();
    lcd.setCursor(0,0);
-   lcd.print("Light");
-   lcd.setCursor(0,1);
+   lcd.print("     Light");
+   lcd.setCursor(5,1);
    lcdldr();
  }
  else
@@ -235,16 +235,16 @@ void sldr()
   Serial.println(ldr);
 }
 
-/*
+
 void lcdlight()
 {
   ldr = analogRead(A2);
 
-  if (ldr =<900)
+  if (ldr <=900)
   {
     analogWrite(3,255);
   }
-  else if (ldr =<500 && ldr >900)
+  else if (ldr <=500 && ldr >900)
   {
     analogWrite(3, 150);
   }
@@ -252,5 +252,6 @@ void lcdlight()
   {
     map(ldr, 0,500,1,149);
   }
+}
 
- */ 
+ 
